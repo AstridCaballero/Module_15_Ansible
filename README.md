@@ -1,12 +1,12 @@
 ![img.png](img.png)
 ## Module 15 - Configuration Management with Ansible
 
-### Chapter 6 - Managing Host Key Checking and SSH keys
+### Chapter 7 - Introduction to Playbooks
 
-Notes from chapter 6 were taken in notes app in freestyle, and it includes a mix of screenshots of TWN bootcamp as well as
+Notes from chapter 7 were taken in notes app in freestyle, and it includes a mix of screenshots of TWN bootcamp as well as
 screenshots of my own work on the terminal and browser. I used AI and I have added that research to my notes.
 
 Notes have been exported into pdf format to be able to get the screenshots (avoiding retaking screenshots which is time-consuming)
 
 You can find original notes for
-- Chapter 6 [here](Module%2015%20-%20chapter%206_notes.pdf).
+- Chapter 7 [here](Module%2015%20-%20chapter%207_notes.pdf).

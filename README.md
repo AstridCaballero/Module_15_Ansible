@@ -1,7 +1,7 @@
 ![img.png](img.png)
 ## Module 15 - Configuration Management with Ansible
 
-### Chapter 10 - Project: Deploy Nodejs application - Part 3
+### Chapter 11 - Project: Deploy Nodejs application - Part 3
 
 Notes from chapter 11 were taken in notes app in freestyle, and it includes a mix of screenshots of TWN bootcamp as well as
 screenshots of my own work on the terminal and browser. I used AI and I have added that research to my notes.

@@ -1,0 +1,4 @@
+version: 1.0.0
+location: /Users/astrid/PythonProject/Ansible/nodejs-app
+linux_name: astrid
+user_home_dir: /home/{{linux_name}}

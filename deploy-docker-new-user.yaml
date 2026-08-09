@@ -1,0 +1,64 @@
+---
+- name: Install Docker
+  hosts: docker_server
+  become: yes
+  tasks:
+    - name: Make sure Docker is installed
+      yum:
+        name: docker
+        update_cache: yes
+        state: present
+    - name: Ensure Docker is running
+      systemd:
+        name: docker
+        state: started
+
+- name: Create new linux user
+  hosts: docker_server
+  vars_files:
+    project-vars
+  become: yes
+  tasks:
+    - name: Create new linux user
+      user:
+        name: astrid
+        group: "{{user_groups}}"
+
+- name: Install Docker-compose
+  hosts: docker_server
+  become: yes
+  become_user: astrid
+  vars_files:
+    project-vars
+  tasks:
+    - name: Create docker-compose directory
+      file:
+        path: ~/.docker/cli-plugins
+        state: directory
+    - name: get architecture of remote machine
+      shell: uname -m
+      register: remote_arch
+    - name: Install docker-compose
+      get_url:
+        url: https://github.com/docker/compose/releases/download/v{{docker_compose_version}}/docker-compose-linux-{{remote_arch.stdout}}
+        dest: ~/.docker/cli-plugins/docker-compose
+        mode: +x
+
+- name: Start docker containers
+  hosts: docker_server
+  become: yes
+  become_user: astrid
+  vars_files:
+    project-vars
+  tasks:
+    - name: Copy docker compose
+      copy:
+        src: /Users/astrid/bootcamp-java-mysql-project/docker-compose-full.yaml
+        dest: /home/astrid/docker-compose.yaml
+    - name: Docker login
+      docker_login:
+        username: cabfish00
+        password: "{{docker_password}}"
+    - name: Start containers from compose
+      community.docker.docker_compose_v2:
+        project_src: /home/astrid

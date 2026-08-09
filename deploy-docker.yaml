@@ -43,10 +43,17 @@
     - name: Reconnect to server session
       meta: reset_connection
 
-- name: test docker pull
+- name: Start docker containers
   hosts: docker_server
+  vars_prompt:
+    - name: docker_password
+      prompt: Enter password for docker registry
   tasks:
-    - name: Pull redis
-      docker_image:
-        name: redis
-        source: pull
+    - name: Copy docker compose
+      copy:
+        src: /Users/astrid/bootcamp-java-mysql-project/docker-compose-full.yaml
+        dest: /home/ec2-user/docker-compose.yaml
+    - name: Docker login
+      docker_login:
+        username: cabfish00
+        pasasword: "{{docker_password}}"

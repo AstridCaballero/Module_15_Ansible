@@ -9,9 +9,9 @@
         update_cache: yes
         state: present
     - name: Ensure Docker is running
-        systemd:
-          name: docker
-          state: started
+      systemd:
+        name: docker
+        state: started
 
 - name: Install Docker-compose
   hosts: docker_server
@@ -45,9 +45,8 @@
 
 - name: Start docker containers
   hosts: docker_server
-  vars_prompt:
-    - name: docker_password
-      prompt: Enter password for docker registry
+  vars_files:
+    project-vars
   tasks:
     - name: Copy docker compose
       copy:
@@ -56,4 +55,7 @@
     - name: Docker login
       docker_login:
         username: cabfish00
-        pasasword: "{{docker_password}}"
+        password: "{{docker_password}}"
+    - name: Start containers from compose
+      community.docker.docker_compose_v2:
+        project_src: /home/ec2-user

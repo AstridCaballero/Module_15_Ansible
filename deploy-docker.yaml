@@ -47,4 +47,6 @@
   hosts: docker_server
   tasks:
     - name: Pull redis
-      command: docker pull redis
+      docker_image:
+        name: redis
+        source: pull

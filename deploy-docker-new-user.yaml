@@ -1,6 +1,21 @@
 ---
+- name: Wait for SSH connection
+  hosts: all
+  gather_facts: False
+  tasks:
+    - name: Ensure SSH port open
+      wait_for:
+        port: 22
+        delay: 10
+        timeout: 100
+        search_regex: OpenSSH
+        host: '{{ (ansible_ssh_host|default(ansible_host))|default(inventory_hostname) }}'
+      vars:
+        ansible_connection: local
+        ansible_python_interpreter: /usr/bin/python3.9
+
 - name: Install Docker
-  hosts: docker_server
+  hosts: all
   become: yes
   tasks:
     - name: Make sure Docker is installed
@@ -14,7 +29,7 @@
         state: started
 
 - name: Create new linux user
-  hosts: docker_server
+  hosts: all
   vars_files:
     project-vars
   become: yes
@@ -22,10 +37,10 @@
     - name: Create new linux user
       user:
         name: astrid
-        group: "{{user_groups}}"
+        groups: "{{user_groups}}"
 
 - name: Install Docker-compose
-  hosts: docker_server
+  hosts: all
   become: yes
   become_user: astrid
   vars_files:
@@ -45,7 +60,7 @@
         mode: +x
 
 - name: Start docker containers
-  hosts: docker_server
+  hosts: all
   become: yes
   become_user: astrid
   vars_files:

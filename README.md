@@ -1,4 +1,5 @@
-![img.png](img.png)
+<img width="131" height="39" alt="image" src="https://github.com/user-attachments/assets/b6897683-5e7c-414a-b338-1442766bf7ab" />
+
 ## Module 15 - Configuration Management with Ansible
 
 ### Chapter 19 - Dynamic Inventory for EC2 Servers

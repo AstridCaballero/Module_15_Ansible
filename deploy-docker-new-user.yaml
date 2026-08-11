@@ -1,6 +1,6 @@
 ---
 - name: Wait for SSH connection
-  hosts: all
+  hosts: aws_ec2
   gather_facts: False
   tasks:
     - name: Ensure SSH port open
@@ -15,7 +15,7 @@
         ansible_python_interpreter: /usr/local/bin/python3
 
 - name: Install Docker
-  hosts: all
+  hosts: tag_Name_prod_server
   become: yes
   tasks:
     - name: Make sure Docker is installed
@@ -29,7 +29,7 @@
         state: started
 
 - name: Create new linux user
-  hosts: all
+  hosts: tag_Name_prod_server
   vars_files:
     project-vars
   become: yes
@@ -40,7 +40,7 @@
         groups: "{{user_groups}}"
 
 - name: Install Docker-compose
-  hosts: all
+  hosts: tag_Name_prod_server
   become: yes
   become_user: astrid
   vars_files:
@@ -60,7 +60,7 @@
         mode: +x
 
 - name: Start docker containers
-  hosts: all
+  hosts: tag_Name_prod_server
   become: yes
   become_user: astrid
   vars_files:

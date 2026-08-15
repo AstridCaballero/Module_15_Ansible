@@ -1,0 +1,68 @@
+---
+- name: Wait for SSH connection
+  hosts: all
+  gather_facts: False
+  tasks:
+    - name: Ensure SSH port open
+      wait_for:
+        port: 22
+        delay: 10
+        timeout: 100
+        search_regex: OpenSSH
+        host: '{{ (ansible_ssh_host|default(ansible_host))|default(inventory_hostname) }}'
+      vars:
+        ansible_connection: local
+        ansible_python_interpreter: /usr/local/bin/python3
+
+- name: Install Docker
+  hosts: all
+  become: yes
+  tasks:
+    - name: Make sure Docker is installed
+      yum:
+        name: docker
+        update_cache: yes
+        state: present
+    - name: Ensure Docker is running
+      systemd:
+        name: docker
+        state: started
+
+- name: Create new linux user
+  hosts: all
+  vars_files:
+    project-vars
+  become: yes
+  roles:
+    - create_user
+
+
+- name: Install Docker-compose
+  hosts: all
+  become: yes
+  become_user: astrid
+  vars_files:
+    project-vars
+  tasks:
+    - name: Create docker-compose directory
+      file:
+        path: ~/.docker/cli-plugins
+        state: directory
+    - name: get architecture of remote machine
+      shell: uname -m
+      register: remote_arch
+    - name: Install docker-compose
+      get_url:
+        url: https://github.com/docker/compose/releases/download/v{{docker_compose_version}}/docker-compose-linux-{{remote_arch.stdout}}
+        dest: ~/.docker/cli-plugins/docker-compose
+        mode: +x
+
+- name: Start docker containers
+  hosts: all
+  become: yes
+  become_user: astrid
+  vars_files:
+    project-vars
+  roles:
+    - start_containers
+

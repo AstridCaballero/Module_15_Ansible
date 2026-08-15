@@ -1,0 +1,44 @@
+#version: '3' # newer Docker Compose (V2) no longer needs the top-level version: '3.x' field in the compose file and just ignores it
+services:
+  java-app:
+    image: cabfish00/demo-app:java-maven-ansible-2.0
+    environment:
+      - DB_USER=user
+      - DB_PWD=pass
+      - DB_SERVER=mysql
+      - DB_NAME=my-app-db
+    ports:
+    - 8080:8080
+    container_name: my-java-app
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: on-failure
+  mysql:
+    image: mysql
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=my-secret-pw
+      - MYSQL_DATABASE=my-app-db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pass
+    volumes:
+    - mysql-data:/var/lib/mysql
+    container_name: mysql
+    # command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pmy-secret-pw" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  phpmyadmin:
+    image: phpmyadmin
+    environment:
+      - PMA_HOST=mysql
+    ports:
+      - 8083:80
+    container_name: myadmin
+volumes:
+  mysql-data:
+    driver: local
